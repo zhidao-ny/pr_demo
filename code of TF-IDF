@@ -1,0 +1,86 @@
+import os
+import codecs
+import math
+import operator
+
+ def toword(txtlis):  #将切割成词表，返回list
+    wordlist = []
+    alltxt = ''
+    for i in txtlis:
+        alltxt = alltxt+str(i)
+    ridenter = alltxt.replace('\n',' ').replace('.',' ').replace('?',' ').replace('!',' ')
+    wordlist = ridenter.split()
+    return wordlist
+    
+ def getridofsw(lis, swlist):  #去除文章中的停用词
+    afterswlis = []
+    for i in lis:
+        if str(i) in swlist:
+            continue
+        else:
+            afterswlis.append(str(i))
+    return afterswlis
+afterswlist = getridofsw(wdlis, swlist)
+
+def freqword(wordlis):  # 统计词频，并返回字典
+    freword = {}
+    for i in wordlis:
+        if str(i) in freword:
+            count = freword[str(i)]
+            freword[str(i)] = count+1
+        else:
+            freword[str(i)] = 1
+    return freword
+
+def corpus(filelist, swlist):  #建立语料库
+    alllist = []
+    for i in filelist:
+        afterswlis = getridofsw(toword(str(i)), swlist)
+        alllist.append(afterswlis)
+    return alllist
+corpuslist = corpus(txtlis,swlist)
+
+def wordinfilecount(word, corpuslist):  #查出包含该词的文档数
+    count = 0  
+    for i in corpuslist:
+        for j in i:
+            if word == j:
+                count += 1
+    return count
+wordinfilecount('it',corpuslist)
+
+def tf_idf(wordlis, filelist, corpuslist):  #计算TF-IDF,并返回字典
+    outdic = {}
+    tf = 0
+    idf = 0
+    dic = freqword(wordlis)
+    outlis = []
+    for i in set(wordlis):
+        tf = float(dic[str(i)])/len(wordlis)  #计算TF：某个词在文章中出现的次数/文章总词数
+        #tf = 5.00000000/len(wordlis)
+        idf = math.log(len(filelist)/(wordinfilecount(str(i), corpuslist)+1))  #计算IDF：log(语料库的文档总数/(包含该词的文档数+1))
+        tfidf = tf*idf  #计算TF-IDF
+        outdic[str(i)] = tfidf
+    orderdic = sorted(outdic.items(), key=operator.itemgetter(1), reverse=True)  #给字典排序
+    return orderdic
+
+sample return
+[('Third', 0.20589594765411293),
+ ('Carr', 0.20589594765411293),
+ ('Awww,', 0.20589594765411293),
+ ('-', 0.20589594765411293),
+ ('David', 0.20589594765411293),
+ ('shoulda', 0.20589594765411293),
+ ('com/2y1zl', 0.20589594765411293),
+ ('bummer', 0.20589594765411293),
+ (';D', 0.20589594765411293),
+ ('You', 0.20589594765411293),
+ ('@switchfoot', 0.20589594765411293),
+ ('Day', 0.20589594765411293),
+ ('http://twitpic', 0.18402671376139368),
+ ("that's", 0.18402671376139368),
+ ('got', 0.15767011966073635),
+ ('do', 0.14592572222314637),
+ ('of', 0.10944429166735976),
+ ('it', 0.0943031299593713),
+ ('to', 0.03648143055578659)]
