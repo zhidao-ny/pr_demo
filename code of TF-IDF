@@ -20,7 +20,6 @@ import operator
         else:
             afterswlis.append(str(i))
     return afterswlis
-afterswlist = getridofsw(wdlis, swlist)
 
 def freqword(wordlis):  # 统计词频，并返回字典
     freword = {}
@@ -38,7 +37,6 @@ def corpus(filelist, swlist):  #建立语料库
         afterswlis = getridofsw(toword(str(i)), swlist)
         alllist.append(afterswlis)
     return alllist
-corpuslist = corpus(txtlis,swlist)
 
 def wordinfilecount(word, corpuslist):  #查出包含该词的文档数
     count = 0  
@@ -47,7 +45,6 @@ def wordinfilecount(word, corpuslist):  #查出包含该词的文档数
             if word == j:
                 count += 1
     return count
-wordinfilecount('it',corpuslist)
 
 def tf_idf(wordlis, filelist, corpuslist):  #计算TF-IDF,并返回字典
     outdic = {}
