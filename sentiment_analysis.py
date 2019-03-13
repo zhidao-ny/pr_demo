@@ -3,16 +3,16 @@ import sqlite3
 
 analyzer = SentimentIntensityAnalyzer().polarity_scores
 
-def sentiment(topic,db,table,score_func):
-   """
-   Input:
+def sentiment(topic,db="twitter.db",table="tweets",score_func=analyzer):
+    """
+    Input:
      topic:      key word (string)
      db:         database of the data (string)
      table:      table of the data (string)
      score_func: the method to calculate the score of the input
-   Return:
+    Return:
      score: (compound score, positive score, neutral score , negtive score)
-   """
+    """
     connection = sqlite3.connect(db)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM {table};".format(table="tweets"))
