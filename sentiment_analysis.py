@@ -31,7 +31,7 @@ def sentiment(topic,db="twitter.db",table="tweets",score_func=analyzer):
             neu += score_func(r[0])["neu"]
             neg += score_func(r[0])["neg"]
     if i > 0:
-        return (compound/i), (pos/i), (neu/i), (neg/i)
+        return {"compound":(compound/i), "pos":(pos/i), "neu":(neu/i), "neg":(neg/i)}
         print("compound: %.2f" % (compound/i))
         print("pos:      %.2f" % (pos/i))
         print("neu:      %.2f" % (neu/i))
