@@ -17,16 +17,16 @@ def sentiment(topic,db,table,score_func):
         if topic in r[0]:
             # print(r[0],score_func(r[0]))
             i += 1
-            neg += score_func(r[0])["neg"]
             compound += score_func(r[0])["compound"]
             pos += score_func(r[0])["pos"]
             neu += score_func(r[0])["neu"]
+            neg += score_func(r[0])["neg"]
     if i > 0:
-        return (neg/i), (compound/i), (pos/i), (neu/i)
-        print("neg:      %.2f" % (neg/i))
+        return (compound/i), (pos/i), (neu/i), (neg/i)
         print("compound: %.2f" % (compound/i))
         print("pos:      %.2f" % (pos/i))
         print("neu:      %.2f" % (neu/i))
+        print("neg:      %.2f" % (neg/i))
     else:
         return null, null, null, null
         print("no record with keyword:", topic)
