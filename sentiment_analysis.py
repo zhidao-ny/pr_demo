@@ -15,7 +15,7 @@ def sentiment(topic,db="twitter.db",table="tweets",score_func=analyzer):
     """
     connection = sqlite3.connect(db)
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM {table};".format(table="tweets"))
+    cursor.execute("SELECT text FROM {table};".format(table="tweets"))
     results = cursor.fetchall()
     i = 0
     neg = 0
