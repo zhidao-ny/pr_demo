@@ -1,0 +1,70 @@
+import pandas as pd
+import os
+import codecs
+import math
+import operator
+df = pd.read_csv('job_des.csv')
+def toword(txtlis):  #将切割成词表，返回list
+    wordlist = []
+    alltxt = ''
+    for i in txtlis:
+        alltxt = alltxt+str(i)
+    ridenter = alltxt.replace('\n',' ').replace('.',' ').replace('?',' ').replace('!',' ').replace(',',' ')
+    wordlist = ridenter.split()
+    return wordlist
+def getridofsw(lis, swlist):  #去除文章中的停用词
+    afterswlis = []
+    for i in lis:
+        if str(i) in swlist:
+            continue
+        else:
+            afterswlis.append(str(i))
+    return afterswlis
+def freqword(wordlis):  # 统计词频，并返回字典
+    freword = {}
+    for i in wordlis:
+        if str(i) in freword:
+            count = freword[str(i)]
+            freword[str(i)] = count+1
+        else:
+            freword[str(i)] = 1
+    return freword
+def corpus(filelist, swlist):  #建立语料库
+    alllist = []
+    for i in filelist:
+        afterswlis = getridofsw(toword(str(i)), swlist)
+        alllist.append(afterswlis)
+    return alllist
+def wordinfilecount(word, corpuslist):  #查出包含该词的文档数
+    count = 0  
+    for i in corpuslist:
+        for j in i:
+            if word == j:
+                count += 1
+    return count
+def tf_idf(wordlis, filelist, corpuslist):  #计算TF-IDF,并返回字典
+    outdic = {}
+    tf = 0
+    idf = 0
+    dic = freqword(wordlis)
+    outlis = []
+    for i in set(wordlis):
+        tf = float(dic[str(i)])/len(wordlis)  #计算TF：某个词在文章中出现的次数/文章总词数
+        idf = math.log(float(len(filelist))/(wordinfilecount(str(i), corpuslist)+1))  #计算IDF：log(语料库的文档总数/(包含该词的文档数+1))
+        tfidf = tf*idf  #计算TF-IDF
+        outdic[str(i)] = tfidf
+    orderdic = sorted(outdic.items(), key=operator.itemgetter(1), reverse=True)  #给字典排序
+    return orderdic
+def getlist(jobtitle,df):
+    dfSE = df.loc[df['job_title'] == str(jobtitle)]
+    txtlist = df['job_fulldescription'].tolist()
+    midlist = dfSE['job_fulldescription'].tolist()
+    wordlist = toword(midlist)
+    swlist = []
+    corpuslist = corpus(txtlist, swlist)
+    TF = tf_idf(wordlist,txtlist,corpuslist)
+    return TF
+listnum = getlist('Software Engineer',df)
+listwd = []
+for i in listnum:
+    listwd.append(i[0])
